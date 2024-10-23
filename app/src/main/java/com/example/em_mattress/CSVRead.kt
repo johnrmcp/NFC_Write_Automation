@@ -1,7 +1,6 @@
  package com.example.em_mattress
 
 import android.net.Uri
-import android.widget.EditText
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
@@ -11,10 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,14 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.em_mattress.ui.theme.Em_MattressTheme
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import java.io.InputStream
 
-@Composable
-fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
+ @Composable
+fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier):String {
     //var text by remember{mutableStateOf("")}    //delete if replaced with file input field
     var selectedFilePath by remember { mutableStateOf("") }
 
@@ -59,25 +52,20 @@ fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
             )
             */
             FilePicker(onFileSelected = { uri ->
-                    selectedFilePath = uri.path
+                    selectedFilePath = uri.path!!
             })
 
             Text(text = "Selected File: $selectedFilePath")
-            /*
+            
             Button(
                 onClick = { navController.navigate(route = Screen.DataOutput.route) },
-                content = { Text("Read CSV", fontSize = MaterialTheme.typography.headlineSmall.fontSize) },
+                content = { Text("Proceed", fontSize = MaterialTheme.typography.headlineSmall.fontSize) },
                 modifier = Modifier.padding(top = 16.dp),
             )
-            */
 
-            Text(
-                text = "CSV Read",
-                modifier = modifier,
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize
-            )
         }
     }
+    return(selectedFilePath)
 }
 
  //composable function which defines the file picker component
@@ -92,7 +80,6 @@ fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
              println("No file selected")
          }
      }
-
      Button(onClick = {
          launcher.launch("text/csv") // Specify the MIME type for CSV files
      }) {
