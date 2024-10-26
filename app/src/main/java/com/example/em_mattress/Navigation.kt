@@ -12,8 +12,7 @@ import androidx.navigation.compose.composable
 fun SetupNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Screen.CSVRead.route) {
         composable(route = Screen.CSVRead.route) {
-            val bob = CSVReadScreen(navController = navController)
-            println(bob)
+            CSVReadScreen(navController = navController)
         }
         composable(route = Screen.DataOutput.route) {
             DataOutputScreen(navController = navController)

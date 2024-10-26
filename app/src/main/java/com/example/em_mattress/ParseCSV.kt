@@ -1,33 +1,27 @@
 package com.example.em_mattress
 
+import android.util.Log
+import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReader
+import com.opencsv.CSVReaderBuilder
+import java.io.File
 import java.io.FileReader
+import java.io.InputStream
 
-
-//fun functionName(parameterName: parameterType, parameter2Name: parameter2Type):  returnVariableType{ contents}
 //this function parses the CSV file into a mutable list of lists of strings
 
-fun parseCSV(filePath: String): List<List<String>> {
-    val reader = CSVReader(FileReader(filePath))
-    val data: MutableList<List<String>> = mutableListOf()
-    reader.forEach { row ->
-        data.add(row.toList())
-    }
-    reader.close()
-    println("message")
-    println(data)
-    return data
-}
 
-/*
-fun readCsv(inputStream: InputStream): List<Movie> {
-    val reader = inputStream.bufferedReader()
-    val header = reader.readLine()
-    return reader.lineSequence()
-        .filter { it.isNotBlank() }
-        .map {
-            val (year, score, title) = it.split(',', ignoreCase = false, limit = 3)
-            Movie(year.trim().toInt(), score.trim().toInt(), title.trim().removeSurrounding("\""))
-        }.toList()
+fun parseCSV(fileName: File){
+    //Convert input stream to file uri
+    val csvReader: CSVReader = CSVReaderBuilder(FileReader(fileName)).withCSVParser(CSVParserBuilder().withSeparator(',').build()).build()
+
+    // Read the rest
+    var line: Array<String>? = csvReader.readNext()
+
+    while (line != null) {
+        // Do something with the data
+        Log.d("parseCSV", line[0] + " " + line[1] + " " + line[2])
+
+        line = csvReader.readNext()
+    }
 }
-*/
