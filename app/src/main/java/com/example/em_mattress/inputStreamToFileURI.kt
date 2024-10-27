@@ -18,6 +18,8 @@ private fun trap(source: InputStream, target: OutputStream) {
 }
 
 fun inputStreamToFileURI(context: Context, inputstream: InputStream): File {
+    // This function was inspired by the following: https://stackoverflow.com/questions/5657411/android-getting-a-file-uri-from-a-content-uri?answertab=scoredesc#tab-top
+    
     val fileName = "temp_file.csv"
 
     // Creating Temp file
