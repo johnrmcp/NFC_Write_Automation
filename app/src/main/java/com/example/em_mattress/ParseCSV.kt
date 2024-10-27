@@ -30,8 +30,9 @@ fun parseCSV(fileName: File): MutableList<Order> {
     //Create the array of Order (class objects) which we will be filling
     var orderArray = mutableListOf<Order>()
 
-    // Read the header line
+    // Define and read the header line
     var line: Array<String>? = csvReader.readNext()
+    line = csvReader.readNext()
 
     while (line != null) {
         // Create an order object (for each line in the CSV file) and store it in the array
@@ -40,8 +41,8 @@ fun parseCSV(fileName: File): MutableList<Order> {
             line[producttype],
             line[variant],
             line[quantity],
-            line[name[0]]+line[name[1]],
-            line[address[0]]+line[address[1]]+line[address[2]]+line[address[3]]+line[address[4]],
+            line[name[0]]+" "+line[name[1]],
+            line[address[0]]+" "+line[address[1]]+" "+line[address[2]]+" "+line[address[3]]+" "+line[address[4]],
             line[phone],
             line[image],
             line[music]))

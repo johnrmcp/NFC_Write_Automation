@@ -11,5 +11,4 @@ class SharedViewModel: ViewModel() {
     fun updateOrderArray(neworderArray: List<Order>) {
         orderArray = neworderArray
     }
-
 }

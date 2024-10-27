@@ -50,15 +50,15 @@ fun CSVReadScreen(navController: NavController,
             Text(
                 text = "Enter CSV",
                 modifier = modifier,
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                fontSize = MaterialTheme.typography.headlineLarge.fontSize
             )
 
             val (isCalled, orderArray) = filePicker()
 
             if (isCalled) {
-                Text(text = "File Acquired")
+                Text(text = "File Acquired", fontSize = MaterialTheme.typography.bodyLarge.fontSize)
             } else {
-                Text(text = "No File Selected")
+                Text(text = "No File Selected", fontSize = MaterialTheme.typography.bodyLarge.fontSize)
             }
 
             Button(
@@ -105,7 +105,8 @@ fun CSVReadScreen(navController: NavController,
      Button(onClick = {
          launcher.launch("text/csv") // Specify the MIME type for CSV files
      }) {
-         Text(text = "Select CSV File")
+         Text(text = "Select CSV File",
+         fontSize = MaterialTheme.typography.headlineSmall.fontSize)
      }
 
      return Pair(isCalled, orderArray)
