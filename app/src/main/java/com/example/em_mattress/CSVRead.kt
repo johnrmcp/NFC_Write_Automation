@@ -33,7 +33,9 @@ import androidx.navigation.compose.rememberNavController
  import java.io.InputStream
 
  @Composable
-fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun CSVReadScreen(navController: NavController,
+                  sharedViewModel: SharedViewModel,
+                  modifier: Modifier = Modifier) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -62,7 +64,9 @@ fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
             Button(
                 onClick = {
                     navController.navigate(route = Screen.DataOutput.route)
-                    Log.d("parseCSV", orderArray[0].orderdate + orderArray[0].ordernumber + orderArray[0].producttype + orderArray[0].variant + orderArray[0].quantity + orderArray[0].name + orderArray[0].address + orderArray[0].phone + orderArray[0].image + orderArray[0].music + "/n" + orderArray[1].orderdate + orderArray[1].ordernumber + orderArray[1].producttype + orderArray[1].variant + orderArray[1].quantity + orderArray[1].name + orderArray[1].address + orderArray[1].phone + orderArray[1].image + orderArray[1].music + "/n" + orderArray[2].orderdate + orderArray[2].ordernumber + orderArray[2].producttype + orderArray[2].variant + orderArray[2].quantity + orderArray[2].name + orderArray[2].address + orderArray[2].phone + orderArray[2].image + orderArray[2].music + "/n" + orderArray[3].orderdate + orderArray[3].ordernumber + orderArray[3].producttype + orderArray[3].variant + orderArray[3].quantity + orderArray[3].name + orderArray[3].address + orderArray[3].phone + orderArray[3].image + orderArray[3].music)
+                    sharedViewModel.updateOrderArray(neworderArray = orderArray)
+                    //print first three lines of the CSV file
+                    Log.d("CSVReadScreen", orderArray[0].orderdate + orderArray[0].ordernumber + orderArray[0].producttype + orderArray[0].variant + orderArray[0].quantity + orderArray[0].name + orderArray[0].address + orderArray[0].phone + orderArray[0].image + orderArray[0].music + "/n" + orderArray[1].orderdate + orderArray[1].ordernumber + orderArray[1].producttype + orderArray[1].variant + orderArray[1].quantity + orderArray[1].name + orderArray[1].address + orderArray[1].phone + orderArray[1].image + orderArray[1].music + "/n" + orderArray[2].orderdate + orderArray[2].ordernumber + orderArray[2].producttype + orderArray[2].variant + orderArray[2].quantity + orderArray[2].name + orderArray[2].address + orderArray[2].phone + orderArray[2].image + orderArray[2].music + "/n" + orderArray[3].orderdate + orderArray[3].ordernumber + orderArray[3].producttype + orderArray[3].variant + orderArray[3].quantity + orderArray[3].name + orderArray[3].address + orderArray[3].phone + orderArray[3].image + orderArray[3].music)
                 },
                 content = { Text("Proceed", fontSize = MaterialTheme.typography.headlineSmall.fontSize) },
                 modifier = Modifier.padding(top = 16.dp),
@@ -113,7 +117,7 @@ fun CSVReadScreen(navController: NavController, modifier: Modifier = Modifier) {
 fun CSVReadScreenPreview() {
     Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
         Em_MattressTheme{
-            CSVReadScreen(navController = rememberNavController())
+            CSVReadScreen(navController = rememberNavController(), sharedViewModel = SharedViewModel())
         }
     }
 }
