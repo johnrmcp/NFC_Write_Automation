@@ -1,12 +1,10 @@
-package com.example.em_mattress
+package com.example.em_mattress.CSVfunctions
 
-import android.util.Log
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReader
 import com.opencsv.CSVReaderBuilder
 import java.io.File
 import java.io.FileReader
-import java.io.InputStream
 
 
 fun parseCSV(fileName: File): MutableList<Order> {
@@ -36,7 +34,8 @@ fun parseCSV(fileName: File): MutableList<Order> {
 
     while (line != null) {
         // Create an order object (for each line in the CSV file) and store it in the array
-        orderArray.add(Order(line[orderdate],
+        orderArray.add(
+            Order(line[orderdate],
             line[ordernumber],
             line[producttype],
             line[variant],
@@ -45,7 +44,8 @@ fun parseCSV(fileName: File): MutableList<Order> {
             line[address[0]]+" "+line[address[1]]+" "+line[address[2]]+" "+line[address[3]]+" "+line[address[4]],
             line[phone],
             line[image],
-            line[music]))
+            line[music])
+        )
 
         // move to the next line
         line = csvReader.readNext()

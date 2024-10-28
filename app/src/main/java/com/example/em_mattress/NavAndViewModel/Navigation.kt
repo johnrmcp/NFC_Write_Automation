@@ -1,13 +1,13 @@
-package com.example.em_mattress
+package com.example.em_mattress.NavAndViewModel
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.em_mattress.composables.CSVReadScreen
+import com.example.em_mattress.composables.DataOutputScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
