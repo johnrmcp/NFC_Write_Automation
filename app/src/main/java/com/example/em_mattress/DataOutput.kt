@@ -1,51 +1,50 @@
 package com.example.em_mattress
 
-import android.annotation.SuppressLint
+import android.R
 import android.util.Log
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
+import coil3.compose.ConstraintsSizeResolver
+import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.em_mattress.ui.theme.Em_MattressTheme
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+
 
 @Composable
 fun DataOutputScreen(navController: NavController,
@@ -117,17 +116,15 @@ fun DataOutputScreen(navController: NavController,
                         })
                 }
             }
-
-            Text(
-                text = "Displaying Order: ${orderArray[itemPosition.value].ordernumber}",
-                modifier = Modifier.padding(20.dp),
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize
-            )
-
-
+//            to display order number:
+//            Text(
+//                text = "Displaying Order: ${orderArray[itemPosition.value].ordernumber}",
+//                modifier = Modifier.padding(20.dp),
+//                fontSize = MaterialTheme.typography.headlineSmall.fontSize
+//            )
             Text(
                 text = "Order Date:",
-                modifier = Modifier.padding(0.dp),
+                modifier = Modifier.padding(top = 20.dp),
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
             Text(
@@ -181,19 +178,38 @@ fun DataOutputScreen(navController: NavController,
                 modifier = Modifier.padding(5.dp),
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
-//            AsyncImage(
-//                model = ImageRequest.Builder(LocalContext.current)
-//                    .data("${orderArray[itemPosition.value].image}")
-//                    .crossfade(true)
-//                    .build(),
-//                contentDescription = "Order Image",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.clip(CircleShape)
-//            )
-
+            if (orderArray[itemPosition.value].image == "") {
+                Box(modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("https://cdn.shopify.com/s/files/1/0717/0437/9609/files/Disk_Type5.png?v=1729892968")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Order Image :)",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape),
+                    )
+                }
+            }else{
+                Box(modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("${orderArray[itemPosition.value].image}")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Order Image :)",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape),
+                    )
+                }
+            }
             Text(
-                text = "Link:",
-                modifier = Modifier.padding(0.dp),
+                text = "Music Link:",
+                modifier = Modifier.padding(top=5.dp),
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
             Text(

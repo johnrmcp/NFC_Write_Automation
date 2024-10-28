@@ -2,8 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <!--NOTE: writing tags with proper format will only work in Android 10 and higher
+    as described here: https://developer.android.com/develop/connectivity/nfc/nfc#manifest
+    in android 9, only the most primitive intent "ACTION_TAG_DISCOVERED" is available.
+    That said, reading tags at these lower APIs is still possible-->
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
