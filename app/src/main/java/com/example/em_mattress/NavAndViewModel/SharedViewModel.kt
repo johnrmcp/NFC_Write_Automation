@@ -8,6 +8,7 @@ import com.example.em_mattress.CSVfunctions.Order
 
 class SharedViewModel: ViewModel() {
     var orderArray by mutableStateOf<List<Order>>(mutableListOf<Order>())
+        private set
 
     fun updateOrderArray(neworderArray: List<Order>) {
         orderArray = neworderArray

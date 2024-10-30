@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -19,6 +20,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.em_mattress.NavAndViewModel.SharedViewModel
 import com.example.em_mattress.ui.theme.Em_MattressTheme
+import com.example.NFCitems.NFCUtil
 
 
 @Composable
@@ -53,12 +56,8 @@ fun DataOutputScreen(navController: NavController,
     val isDropDownExpanded = remember { mutableStateOf(false) }
     //remember the position of the item in the dropdown menu which is selected
     val itemPosition = remember { mutableStateOf(0) }
-    //onLaunch {
-    //display first three lines of CSV
-    Log.d(
-        "DataOutputScreen",
-        orderArray[0].orderdate + orderArray[0].ordernumber + orderArray[0].producttype + orderArray[0].variant + orderArray[0].quantity + orderArray[0].name + orderArray[0].address + orderArray[0].phone + orderArray[0].image + orderArray[0].music + "/n" + orderArray[1].orderdate + orderArray[1].ordernumber + orderArray[1].producttype + orderArray[1].variant + orderArray[1].quantity + orderArray[1].name + orderArray[1].address + orderArray[1].phone + orderArray[1].image + orderArray[1].music + "/n" + orderArray[2].orderdate + orderArray[2].ordernumber + orderArray[2].producttype + orderArray[2].variant + orderArray[2].quantity + orderArray[2].name + orderArray[2].address + orderArray[2].phone + orderArray[2].image + orderArray[2].music + "/n" + orderArray[3].orderdate + orderArray[3].ordernumber + orderArray[3].producttype + orderArray[3].variant + orderArray[3].quantity + orderArray[3].name + orderArray[3].address + orderArray[3].phone + orderArray[3].image + orderArray[3].music
-    )
+    //boolean to determine visibility of dialog
+    var showDialog by remember { mutableStateOf(false) }
     //create a list of just order numbers
     if (ordernumbers.size < orderArray.size - 1){
         for (i in 0..<orderArray.size) {
@@ -213,12 +212,22 @@ fun DataOutputScreen(navController: NavController,
             )
 
             Button(
-                onClick = {},
+                onClick = {showDialog = true
+                    NFCUtil.boxon.value = true},
                 content = { Text("Write to NFC", fontSize = MaterialTheme.typography.headlineLarge.fontSize) }, //change to show the CSV name
                 modifier = Modifier.padding(top = 16.dp),
                 colors = ButtonDefaults.buttonColors()
             )
+            if (!NFCUtil.boxon.value){showDialog = false}
 
+            if (showDialog) {
+                val onDismiss = { showDialog = false }
+                NFCUtil.changepayload("${orderArray[itemPosition.value].music}")
+                NFCUtil.turnon()
+                NFCDialog(onDismiss)
+            } else {
+                NFCUtil.turnoff()
+            }
             Button(
                 onClick = {navController.popBackStack()},
                 content = { Text("Go Back", fontSize = MaterialTheme.typography.headlineSmall.fontSize) }, //change to show the CSV name
@@ -228,6 +237,29 @@ fun DataOutputScreen(navController: NavController,
 
         }
     }
+}
+
+@Composable
+fun NFCDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        title = {
+            Text(NFCUtil.text.value)
+        },
+        onDismissRequest = {
+            onDismiss()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                }
+            ) {
+                Text("Cancel Write")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)

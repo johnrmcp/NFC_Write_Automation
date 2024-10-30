@@ -104,7 +104,7 @@ fun CSVReadScreen(navController: NavController,
      }
 
      Button(onClick = {
-         launcher.launch("text/csv") // Specify the MIME type for CSV files
+         launcher.launch("text/csv")
      }) {
          Text(text = "Select CSV File",
          fontSize = MaterialTheme.typography.headlineSmall.fontSize)
