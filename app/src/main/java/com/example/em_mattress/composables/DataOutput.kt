@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +30,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +40,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
@@ -45,6 +50,7 @@ import coil3.request.crossfade
 import com.example.em_mattress.NavAndViewModel.SharedViewModel
 import com.example.em_mattress.ui.theme.Em_MattressTheme
 import com.example.NFCitems.NFCUtil
+import com.example.em_mattress.ui.theme.Purple40
 import kotlinx.coroutines.delay
 
 
@@ -55,6 +61,8 @@ fun DataOutputScreen(navController: NavController,
     var text by remember { mutableStateOf("") }
     //get orderArray from sharedViewModel
     val orderArray = sharedViewModel.orderArray
+    //font size of important info
+    val important = 20
     //a variable which holds the order numbers
     val ordernumbers: MutableList<String> by remember { mutableStateOf(mutableListOf<String>()) }
     //remember the state of the drop down menu
@@ -65,6 +73,10 @@ fun DataOutputScreen(navController: NavController,
     var showDialog by remember { mutableStateOf(false) }
     //specifies the value in the dialog for quantity
     val showQuantityDialog = remember { mutableStateOf(false) }
+    //defines the nfc payload (required because of disk set)
+    var nfcpayload by remember { mutableStateOf<String?>(null) }
+    //defines the image for the nfc payload
+    var image by remember { mutableStateOf<String?>(null) }
     //create a list of just order numbers
     if (ordernumbers.size < orderArray.size - 1){
         for (i in 0..<orderArray.size) {
@@ -72,7 +84,6 @@ fun DataOutputScreen(navController: NavController,
             ordernumbers.add(orderArray[i].ordernumber!!)
         }
     }
-    //}
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -156,9 +167,14 @@ fun DataOutputScreen(navController: NavController,
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
             Text(
-                text = "${orderArray[itemPosition.value].producttype}",
+                text = if (orderArray[itemPosition.value].producttype!!.contains("Keychain + Personalized")) {"Keychain + Disk"}
+                else if (orderArray[itemPosition.value].producttype!!.contains("Fragrance")){"Fragrance Refill"}
+                else if (orderArray[itemPosition.value].producttype!!.contains("Personalized Disks")){"Disk Set"}
+                else if (orderArray[itemPosition.value].producttype!!.contains("Keychain")){"Empty Keychain"}
+                else {"Vent Record Player"},
                 modifier = Modifier.padding(bottom = 5.dp),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                fontSize = important.sp,
+                color = Purple40
             )
             Text(
                 text = "Variant:",
@@ -168,7 +184,8 @@ fun DataOutputScreen(navController: NavController,
             Text(
                 text = "${orderArray[itemPosition.value].variant}",
                 modifier = Modifier.padding(bottom = 5.dp),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                fontSize = important.sp,
+                color = Purple40
             )
             Text(
                 text = "Quantity:",
@@ -185,7 +202,7 @@ fun DataOutputScreen(navController: NavController,
                 Text(
                     text = "${orderArray[itemPosition.value].quantity}",
                     modifier = Modifier.padding(bottom = 5.dp),
-                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                    fontSize = important.sp,
                     color = Color.Red,
                     fontWeight = FontWeight.Bold
                 )
@@ -210,7 +227,7 @@ fun DataOutputScreen(navController: NavController,
             Text(
                 text = "${orderArray[itemPosition.value].name}" + "  " + "${orderArray[itemPosition.value].address}" + "  " + "${orderArray[itemPosition.value].phone}",
                 modifier = Modifier.padding(bottom = 5.dp),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                fontSize = MaterialTheme.typography.bodySmall.fontSize
             )
 
             Text(
@@ -218,21 +235,106 @@ fun DataOutputScreen(navController: NavController,
                 modifier = Modifier.padding(5.dp),
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
             )
-            if (orderArray[itemPosition.value].image == "") {
+            if (orderArray[itemPosition.value].image == "" &&  orderArray[itemPosition.value].producttype!!.contains("Fragrance")) {
                 Box(modifier = Modifier
                     .height(100.dp)
                     .width(100.dp)) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://cdn.shopify.com/s/files/1/0717/0437/9609/files/Disk_Type5.png?v=1729892968")
+                            .data("https://cdn.shopify.com/s/files/1/0717/0437/9609/files/Fragrance_Alert.png?v=1731559154")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "Order Image :)",
+                        contentDescription = "Fragrance Image Down :(",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.clip(CircleShape),
                     )
                 }
-            }else{
+            }else if (orderArray[itemPosition.value].image == "" &&  orderArray[itemPosition.value].producttype!!.contains("Empty Disk-Case Keychain")){
+                Box(modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("https://cdn.shopify.com/s/files/1/0717/0437/9609/files/Fragrance_Alert.png?v=1731559154")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Empty Image Down :(",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape),
+                    )
+                }
+            }else if (orderArray[itemPosition.value].image == ""){
+                Box(modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("https://cdn.shopify.com/s/files/1/0717/0437/9609/files/Blank.png?v=1731547382")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Blank Image Down :(",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape),
+                    )
+                }
+            } else if (orderArray[itemPosition.value].producttype!!.contains("Personalized Disks")){
+                Row(modifier = Modifier
+                    .height(75.dp)
+                    .width(300.dp)) {
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("${orderArray[itemPosition.value].image}")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Order Image :)",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape),
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("${orderArray[itemPosition.value].image2}")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Order Image :)",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape),
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("${orderArray[itemPosition.value].image3}")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Order Image :)",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape),
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("${orderArray[itemPosition.value].image4}")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Order Image :)",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape),
+                        )
+                    }
+                }
+            }else {
                 Box(modifier = Modifier
                     .height(100.dp)
                     .width(100.dp)) {
@@ -247,34 +349,99 @@ fun DataOutputScreen(navController: NavController,
                     )
                 }
             }
-            Text(
-                text = "Music Link:",
-                modifier = Modifier.padding(top=5.dp),
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize
-            )
-            Text(
-                text = "${orderArray[itemPosition.value].music}",
-                modifier = Modifier.padding(bottom = 5.dp),
-                fontSize = MaterialTheme.typography.bodySmall.fontSize
-            )
 
-            Button(
-                onClick = {showDialog = true
-                    NFCUtil.boxon.value = true},
-                content = { Text("Write to NFC", fontSize = MaterialTheme.typography.headlineLarge.fontSize) }, //change to show the CSV name
-                modifier = Modifier.padding(top = 16.dp),
-                colors = ButtonDefaults.buttonColors()
-            )
+            if (orderArray[itemPosition.value].producttype!!.contains("Fragrance")){ //defines the case where there is a fragrance
+
+            } else if (orderArray[itemPosition.value].producttype!!.contains("Personalized Disks")) { //defines the case where there is a disk set
+                Row(modifier = Modifier
+                    .height(75.dp)
+                    .width(300.dp)) {
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        Button(
+                            onClick = {showDialog = true
+                                NFCUtil.boxon.value = true
+                                nfcpayload = orderArray[itemPosition.value].music
+                                image = orderArray[itemPosition.value].image},
+                            content = { Text("W1", fontSize = important.sp) }, //change to show the CSV name
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors()
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        Button(
+                            onClick = {showDialog = true
+                                NFCUtil.boxon.value = true
+                                nfcpayload = orderArray[itemPosition.value].music2
+                                image = orderArray[itemPosition.value].image2},
+                            content = { Text("W2", fontSize = important.sp) }, //change to show the CSV name
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors()
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        Button(
+                            onClick = {showDialog = true
+                                NFCUtil.boxon.value = true
+                                nfcpayload = orderArray[itemPosition.value].music3
+                                image = orderArray[itemPosition.value].image3},
+                            content = { Text("W3", fontSize = important.sp) }, //change to show the CSV name
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors()
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(75.dp)
+                        .width(75.dp)) {
+                        Button(
+                            onClick = {showDialog = true
+                                NFCUtil.boxon.value = true
+                                nfcpayload = orderArray[itemPosition.value].music4
+                                image = orderArray[itemPosition.value].image4},
+                            content = { Text("W4", fontSize = important.sp) }, //change to show the CSV name
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors()
+                        )
+                    }
+                }
+            } else { //defines the case where there is a keychain or a spinner
+                Text(
+                    text = "Music Link:",
+                    modifier = Modifier.padding(top=5.dp),
+                    fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                )
+                Text(
+                    text = "${orderArray[itemPosition.value].music}",
+                    modifier = Modifier.padding(bottom = 5.dp),
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize
+                )
+                Button(
+                    onClick = {showDialog = true
+                        NFCUtil.boxon.value = true
+                              nfcpayload = orderArray[itemPosition.value].music
+                              image = orderArray[itemPosition.value].image},
+                    content = { Text("Write to NFC", fontSize = MaterialTheme.typography.headlineLarge.fontSize) }, //change to show the CSV name
+                    modifier = Modifier.padding(top = 16.dp),
+                    colors = ButtonDefaults.buttonColors()
+                )
+            }
             if (!NFCUtil.boxon.value){showDialog = false}
 
             if (showDialog) {
                 val onDismiss = { showDialog = false }
-                NFCUtil.changepayload("${orderArray[itemPosition.value].music}")
+                NFCUtil.changepayload(nfcpayload!!)
                 NFCUtil.turnon()
-                NFCDialog(onDismiss)
+                NFCDialog(onDismiss, image)
             } else {
                 NFCUtil.turnoff()
             }
+
+
             Button(
                 onClick = {navController.popBackStack()},
                 content = { Text("Go Back", fontSize = MaterialTheme.typography.headlineSmall.fontSize) }, //change to show the CSV name
@@ -288,25 +455,67 @@ fun DataOutputScreen(navController: NavController,
 
 @Composable
 fun NFCDialog(
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    image: String?
 ) {
-    AlertDialog(
-        title = {
-            Text(NFCUtil.text.value)
-        },
-        onDismissRequest = {
-            onDismiss()
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                }
+    Dialog(onDismissRequest = { onDismiss() }){
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(375.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Cancel Write")
+                Text(NFCUtil.text.value,
+                        modifier = Modifier.padding(all = 20.dp),
+                    fontSize = MaterialTheme.typography.headlineSmall.fontSize)
+                Box(
+                    modifier = Modifier
+                        .height(120.dp)
+                        .width(120.dp)
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Order Image :)",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape),
+                    )
+                }
+                Button(
+                    onClick = { onDismiss() },
+                    content = { Text("Cancel Write", fontSize = MaterialTheme.typography.headlineSmall.fontSize) }, //change to show the CSV name
+                    modifier = Modifier.padding(top = 16.dp),
+                    colors = ButtonDefaults.buttonColors()
+                )
             }
         }
-    )
+    }
+//    AlertDialog(
+//        title = {
+//            Text(NFCUtil.text.value)
+//        },
+//        onDismissRequest = {
+//            onDismiss()
+//        },
+//        confirmButton = {
+//            TextButton(
+//                onClick = {
+//                    onDismiss()
+//                }
+//            ) {
+//                Text("Cancel Write")
+//            }
+//        }
+//    )
 }
 
 @Composable

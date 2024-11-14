@@ -24,6 +24,12 @@ fun parseCSV(fileName: File): MutableList<Order> {
     val phone: Int = 12
     val image: Int = 14
     val music: Int = 15
+    val image2: Int = 16
+    val music2: Int = 17
+    val image3: Int = 18
+    val music3: Int = 19
+    val image4: Int = 20
+    val music4: Int = 21
 
     //Create the array of Order (class objects) which we will be filling
     var orderArray = mutableListOf<Order>()
@@ -44,7 +50,13 @@ fun parseCSV(fileName: File): MutableList<Order> {
             line[address[0]]+" "+line[address[1]]+" "+line[address[2]]+" "+line[address[3]]+" "+line[address[4]],
             line[phone],
             line[image],
-            line[music])
+            line[music],
+            line[image2],
+            line[music2],
+            line[image3],
+            line[music3],
+            line[image4],
+            line[music4])
         )
 
         // move to the next line

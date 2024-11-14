@@ -13,9 +13,21 @@ class Order(
     val address: String?,
     val phone: String?,
     val image: String?,
-    val music: String?) : Parcelable {
+    val music: String?,
+    val image2: String?,
+    val music2: String?,
+    val image3: String?,
+    val music3: String?,
+    val image4: String?,
+    val music4: String?) : Parcelable {
         // auto - generate parcelable code
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -40,6 +52,12 @@ class Order(
         parcel.writeString(phone)
         parcel.writeString(image)
         parcel.writeString(music)
+        parcel.writeString(image2)
+        parcel.writeString(music2)
+        parcel.writeString(image3)
+        parcel.writeString(music3)
+        parcel.writeString(image4)
+        parcel.writeString(music4)
     }
 
     override fun describeContents(): Int {
